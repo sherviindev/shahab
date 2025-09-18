@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Meteors Day/Night Switch</title>
+  <style id="theme-style"></style>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Yekan', sans-serif;
+    }
+
+    .header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .toggle-button {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      transition: background 0.3s;
+    }
+
+    @media (max-width: 600px) {
+      .toggle-button {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+      }
+    }
+
+    .text {
+      font-family: 'TAHOMA', sans-serif;
+      font-size: 100px;
+      font-weight: 700;
+      background: linear-gradient(to bottom, #ffffff, #000000);
+      -webkit-background-clip: text;
+      color: transparent;
+      text-align: center;
+      pointer-events: none;
+      white-space: pre-wrap;
+      z-index: 10;
+      margin: 0;
+    }
+
+    @media (max-width: 600px) {
+      .text {
+        font-size: 50px;
+      }
+    }
+
+    .text span {
+      display: inline-block;
+      opacity: 0;
+      filter: blur(10px);
+      transform: translateY(20px);
+      animation-fill-mode: forwards;
+      animation-name: blurInUp;
+      animation-duration: 0.4s;
+      animation-timing-function: ease-out;
+      background: inherit;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    @keyframes blurInUp {
+      to {
+        opacity: 1;
+        filter: blur(0);
+        transform: translateY(0);
+      }
+    }
+
+    #animated-text {
+      font-family: 'Yekan', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      white-space: pre-wrap;
+      user-select: none;
+      direction: rtl;
+      text-align: center;
+      margin-top: 10px;
+      max-width: 90vw;
+      pointer-events: none;
+      margin-left: auto;
+      margin-right: auto;
+      background: linear-gradient(to bottom, #ffffff, #000000);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    @media (max-width: 600px) {
+      #animated-text {
+        font-size: 1rem;
+      }
+    }
+
+    #animated-text span {
+      display: inline-block;
+      opacity: 0;
+      transform: scale(0.5) translateX(-20px);
+      animation-fill-mode: forwards;
+      animation-name: scaleSlideLeftToRight;
+      animation-duration: 0.3s;
+      animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+      background: inherit;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    @keyframes scaleSlideLeftToRight {
+      to {
+        opacity: 1;
+        transform: scale(1) translateX(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <button id="theme-toggle" class="toggle-button">🌙</button>
+  </div>
+
+  <h1 class="text" id="h1-text">BluestMoon</h1>
+
+  <div id="animated-text">آبی‌ترین ماه، دنیایی از فرصت‌ها برای پیشرفت و شتاب‌دهی به کسب‌وکار شماست.</div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let currentTheme = getInitialTheme();
+
+      function getInitialTheme() {
+        const hour = new Date().getHours();
+        return (hour >= 6 && hour < 18) ? 'day' : 'night';
+      }
+
+      function applyTheme(theme) {
+        currentTheme = theme;
+        const style = document.getElementById('theme-style');
+        const toggleBtn = document.getElementById('theme-toggle');
+
+        if (theme === 'night') {
+          toggleBtn.textContent = '🌙';
+          style.innerHTML = `
+            body {
+              background: #000;
+              color: #fff;
+              font-family: 'Yekan', sans-serif;
+              height: 100vh;
+              margin: 0;
+              overflow: hidden;
+              position: relative;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              flex-direction: column;
+            }
+            .meteor {
+              position: absolute;
+              width: 2px;
+              height: 2px;
+              background: #e5e7eb;
+              border-radius: 50%;
+              box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3);
+              animation: meteor linear forwards;
+              top: -20%;
+            }
+            .meteor::after {
+              content: '';
+              position: absolute;
+              top: -60px;
+              left: 50%;
+              width: 2px;
+              height: 60px;
+              background: linear-gradient(to top, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+              transform: translateX(-50%);
+              z-index: -90;
+            }
+            @keyframes meteor {
+              0% {
+                opacity: 1;
+                transform: translate(0, 0) rotate(30deg);
+              }
+              100% {
+                opacity: 0;
+                transform: translate(-500px, 100vh) rotate(30deg);
+              }
+            }
+            .text {
+              font-family: 'TAHOMA', sans-serif;
+              font-size: 100px;
+              font-weight: 700;
+              background: linear-gradient(to bottom, #ffffff, #000000);
+              -webkit-background-clip: text;
+              color: transparent;
+              text-align: center;
+              pointer-events: none;
+              white-space: pre-wrap;
+              z-index: 10;
+              margin: 0;
+            }
+            @media (max-width: 600px) {
+              .text {
+                font-size: 50px;
+              }
+            }
+            .text span {
+              display: inline-block;
+              opacity: 0;
+              filter: blur(10px);
+              transform: translateY(20px);
+              animation-fill-mode: forwards;
+              animation-name: blurInUp;
+              animation-duration: 0.4s;
+              animation-timing-function: ease-out;
+              background: inherit;
+              -webkit-background-clip: text;
+              color: transparent;
+            }
+            @keyframes blurInUp {
+              to {
+                opacity: 1;
+                filter: blur(0);
+                transform: translateY(0);
+              }
+            }
+            #animated-text {
+              background: linear-gradient(to bottom, #ffffff, #000000);
+              -webkit-background-clip: text;
+              color: transparent;
+              font-family: 'Yekan', sans-serif;
+              font-weight: 700;
+            }
+          `;
+        } else {
+          toggleBtn.textContent = '☀️';
+          style.innerHTML = `
+            body {
+              background: #fff;
+              color: #111;
+              font-family: 'Yekan', sans-serif;
+              height: 100vh;
+              margin: 0;
+              overflow: hidden;
+              position: relative;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              flex-direction: column;
+            }
+            .meteor {
+              position: absolute;
+              width: 2px;
+              height: 2px;
+              background: #4b5563;
+              border-radius: 50%;
+              box-shadow: 0 0 0 1px rgba(75, 85, 99, 0.5);
+              animation: meteor linear forwards;
+              top: -20%;
+            }
+            .meteor::after {
+              content: '';
+              position: absolute;
+              top: -60px;
+              left: 50%;
+              width: 2px;
+              height: 60px;
+              background: linear-gradient(to top, rgba(75, 85, 99, 1), rgba(75, 85, 99, 0));
+              transform: translateX(-50%);
+              z-index: -90;
+            }
+            @keyframes meteor {
+              0% {
+                opacity: 1;
+                transform: translate(0, 0) rotate(30deg);
+              }
+              100% {
+                opacity: 0;
+                transform: translate(-500px, 100vh) rotate(30deg);
+              }
+            }
+            .text {
+              font-family: 'TAHOMA', sans-serif;
+              font-size: 100px;
+              font-weight: 700;
+              background: linear-gradient(to bottom, #111111, #ffffff);
+              -webkit-background-clip: text;
+              color: transparent;
+              text-align: center;
+              pointer-events: none;
+              white-space: pre-wrap;
+              z-index: 10;
+              margin: 0;
+            }
+            @media (max-width: 600px) {
+              .text {
+                font-size: 50px;
+              }
+            }
+            .text span {
+              display: inline-block;
+              opacity: 0;
+              filter: blur(10px);
+              transform: translateY(20px);
+              animation-fill-mode: forwards;
+              animation-name: blurInUp;
+              animation-duration: 0.4s;
+              animation-timing-function: ease-out;
+              background: inherit;
+              -webkit-background-clip: text;
+              color: transparent;
+            }
+            @keyframes blurInUp {
+              to {
+                opacity: 1;
+                filter: blur(0);
+                transform: translateY(0);
+              }
+            }
+            #animated-text {
+              background: linear-gradient(to bottom, #111111, #ffffff);
+              -webkit-background-clip: text;
+              color: transparent;
+              font-family: 'Yekan', sans-serif;
+              font-weight: 700;
+            }
+          `;
+        }
+      }
+
+      function createMeteor(minDelay = 0.1, maxDelay = 0.8, minDuration = 0.5, maxDuration = 3) {
+        const meteor = document.createElement('span');
+        meteor.className = 'meteor';
+
+        const angle = Math.random() * 20 + 45;
+        const delay = Math.random() * (maxDelay - minDelay) + minDelay;
+        const duration = Math.random() * (maxDuration - minDuration) + minDuration;
+
+        const isMobile = window.innerWidth < 600;
+        const chance = Math.random();
+
+        if (isMobile && chance > 0.7) {
+          meteor.style.left = window.innerWidth + 20 + 'px';
+          meteor.style.top = Math.floor(Math.random() * window.innerHeight) + 'px';
+        } else {
+          meteor.style.left = Math.floor(Math.random() * window.innerWidth) + 'px';
+          meteor.style.top = '-20%';
+        }
+
+        meteor.style.transform = `rotate(${angle}deg)`;
+        meteor.style.animationDelay = delay + 's';
+        meteor.style.animationDuration = duration + 's';
+        document.body.appendChild(meteor);
+
+        meteor.addEventListener('animationend', () => {
+          meteor.remove();
+        });
+      }
+
+      function spawnMeteors(number = 10, minDelay = 0.1, maxDelay = 0.8, minDuration = 0.5, maxDuration = 3) {
+        for (let i = 0; i < number; i++) {
+          setTimeout(() => createMeteor(minDelay, maxDelay, minDuration, maxDuration), Math.random() * 1000);
+        }
+
+        setInterval(() => {
+          createMeteor(minDelay, maxDelay, minDuration, maxDuration);
+        }, 1000 / number);
+      }
+
+      applyTheme(currentTheme);
+      spawnMeteors(10, 0.1, 0.8, 0.5, 3);
+
+      // انیمیشن متن h1
+      function animateH1Text() {
+        const container = document.getElementById('h1-text');
+        if (!container) return;
+
+        const text = container.textContent.trim();
+        container.textContent = '';
+
+        text.split('').forEach((char, index) => {
+          const span = document.createElement('span');
+          span.textContent = char === ' ' ? '\u00A0' : char;
+          span.style.animationDelay = (index * 0.05) + 's';
+          container.appendChild(span);
+        });
+      }
+
+      // انیمیشن متن
+      function animateTextRTL(containerId, by = 'word', animationDuration = 0.3, delayBetween = 0.05) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        const text = container.textContent.trim();
+        container.textContent = '';
+
+        let segments = [];
+
+        switch (by) {
+          case 'character':
+            segments = text.split('');
+            break;
+          case 'word':
+            segments = text.split(/(\s+)/);
+            break;
+          case 'text':
+          default:
+            segments = [text];
+            break;
+        }
+
+        segments.forEach((segment, index) => {
+          const span = document.createElement('span');
+          span.textContent = segment === ' ' ? '\u00A0' : segment;
+          span.style.animationDelay = (index * delayBetween) + 's';
+          span.style.animationDuration = animationDuration + 's';
+          container.appendChild(span);
+        });
+      }
+
+      animateH1Text();
+      animateTextRTL('animated-text', 'word', 0.3, 0.05);
+
+      document.getElementById('theme-toggle').addEventListener('click', () => {
+        const newTheme = currentTheme === 'night' ? 'day' : 'night';
+        applyTheme(newTheme);
+      });
+    });
+  </script>
+</body>
+</html>
